@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="AppListaCompras.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:AppListaCompras.Views"
+    Shell.FlyoutBehavior="Disabled"
+    BackgroundColor="#2C3333"
+    Shell.TabBarBackgroundColor ="#2C3333"
+    Shell.TabBarTitleColor ="#E7F6F2"
+    Shell.TabBarUnselectedColor="#95A5A6"
+    >
+    
+    <TabBar>
+        <Tab Title="Lista de compras" Icon="lista_menu">
+            <ShellContent ContentTemplate="{DataTemplate local:ListaCompras}" />
+        </Tab>
+        <Tab Title="Produtos" Icon="produto_menu">
+            <ShellContent ContentTemplate="{DataTemplate local:ListaProdutos}" />
+        </Tab>
+    </TabBar>
+
+</Shell>

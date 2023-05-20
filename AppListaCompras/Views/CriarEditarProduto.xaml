@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:Domain.ViewModel;assembly=Domain"
+             xmlns:behaviors="clr-namespace:Domain.Behaviors;assembly=Domain"
+             x:DataType="viewmodel:CriarEditarProdutoViewModel"
+             x:Class="AppListaCompras.Views.CriarEditarProduto"
+             Title="{Binding Titulo}"
+             BackgroundColor="{StaticResource BgGeral}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary Source="../Resources/AppStyles/Geral.xaml" />
+    </ContentPage.Resources>
+
+    <VerticalStackLayout Padding="10">
+        <Grid ColumnDefinitions="1*,3*" RowDefinitions="1*,1*,1*">
+            
+            <Label Style="{StaticResource CriarProdutoLabel}" Grid.Column="0" Grid.Row="0" Text="Nome" VerticalOptions="Center" FontAttributes="Bold"></Label>
+            <Border Style="{StaticResource BorderStyle}" Grid.Column="3" Grid.Row="0" VerticalOptions="Center">
+                <Entry    Placeholder="Nome produto" Text="{Binding Descricao}"  ></Entry>
+                
+            </Border>
+
+            <Label Style="{StaticResource CriarProdutoLabel}" Grid.Column="0" Grid.Row="1" Text="Preço" VerticalOptions="Center" FontAttributes="Bold" ></Label>
+            <Border Style="{StaticResource BorderStyle}" Grid.Column="3" Grid.Row="1" VerticalOptions="Center">
+                <Entry Style="{StaticResource CriarProdutoEntry}"  Placeholder="Preço" Text="{Binding Preco}" Keyboard="Numeric" VerticalOptions="Center">
+                    <Entry.Behaviors>
+                        <behaviors:ValorBehavior/>
+                    </Entry.Behaviors>
+                </Entry>
+            </Border>
+
+            <Label Style="{StaticResource CriarProdutoLabel}" Grid.Column="0" Grid.Row="2" Text="Unidade de medida" VerticalOptions="Center" FontAttributes="Bold"></Label>
+            <Border Style="{StaticResource BorderStyle}" Grid.Column="3" Grid.Row="2" VerticalOptions="Center">
+                <Picker Style="{StaticResource PicStyle}"  Title="Selecione" SelectedItem="{Binding UnidadeMedida}">
+                    <Picker.Items>
+                        <x:String>Grama</x:String>
+                        <x:String>Kilo</x:String>
+                        <x:String>Litro</x:String>
+                        <x:String>Pacote</x:String>
+                        <x:String>Unidade</x:String>
+                        <x:String>Caixa</x:String>
+                        <x:String>Lata</x:String>
+                        <x:String>Outro</x:String>
+                    </Picker.Items>
+                </Picker>
+            </Border>
+        </Grid>
+        
+        <FlexLayout JustifyContent="SpaceBetween" AlignItems="Center" HeightRequest="60" Margin="0,10">
+            <Button Style="{StaticResource BtnStyle}" Text="Salvar" Command="{Binding SalvarBtnCommand}"></Button>
+            <Button Style="{StaticResource BtnStyle}" Text="Salvar e criar outro" Command="{Binding SalvarCriarBtnCommand}"></Button>
+            <Button Style="{StaticResource BtnStyle}" Text="Apagar" Command="{Binding ApagarBtnCommand}" IsVisible="{Binding BtnVisivelCancelar}" TextColor="White" BackgroundColor="Red"></Button>
+        </FlexLayout>
+    </VerticalStackLayout>
+
+
+</ContentPage>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:Domain.ViewModel;assembly=Domain"
+             xmlns:model="clr-namespace:Domain.Model;assembly=Domain"
+             x:DataType="viewmodel:ListaProdutosViewModel"
+             x:Class="AppListaCompras.Views.ListaProdutos"
+             x:Name="ListaProdutoView"
+             Title="Lista de Produtos"
+             BackgroundColor="{StaticResource BgGeral}">
+
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsVisible="False" IsEnabled="False" />
+    </Shell.BackButtonBehavior>
+
+    <ContentPage.Resources>
+        <ResourceDictionary Source="../Resources/AppStyles/Geral.xaml" />
+    </ContentPage.Resources>
+
+    <RefreshView Command="{Binding AtualizarLista}" IsRefreshing="{Binding AtualizandoPagina}">
+        <Grid Padding="10" ColumnDefinitions="*" RowDefinitions="0.2*, *" >
+            <VerticalStackLayout Grid.Column="0" Grid.Row="0"  Spacing="10" ZIndex="10">
+                <Button Style="{StaticResource BtnStyle}" Text="Novo Produto" Command="{Binding CriarProdutoBtn}"></Button>
+                <Border Style="{StaticResource BorderStyle}">
+                    <SearchBar x:Name="searchBarProdutos" Placeholder="Procure por um produto" Text="{Binding CampoBuscaTexto, Mode=TwoWay}"></SearchBar>
+                </Border>
+                <Line></Line>
+                <ActivityIndicator Margin="10" IsRunning="{Binding CarregandoConteudo}" />
+            </VerticalStackLayout>
+
+            <CollectionView  Grid.Column="0" Grid.Row="1" RemainingItemsThreshold="1" RemainingItemsThresholdReachedCommand="{Binding MudarPagina}" ItemsSource="{Binding Produtos}">
+                <CollectionView.EmptyView>
+                    <StackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                        <Label Text="Nenhum produto encontrado" TextColor="White"></Label>
+                    </StackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:Produto">
+
+                        <Border Style="{StaticResource BorderStyle}" Padding="8">
+                            <Grid ColumnDefinitions="1.9*,1.1*,1.4*,0.3*">
+                                <Label Grid.Column="0" Text="{Binding Descricao}" MaxLines="1" FontAttributes="Bold"></Label>
+                                <Label Grid.Column="1" Text="{Binding UnidadeMedida}" FontAttributes="Bold" ></Label>
+                                <Label Grid.Column="2" Text="{Binding Preco, StringFormat='{0:C}'}"  FontAttributes="Bold" ></Label>
+                                <ImageButton
+                                    Grid.Column="3"
+                                    Source="editar" Aspect="AspectFit" 
+                                    WidthRequest="20" HeightRequest="20"
+                                    HorizontalOptions="End"
+                                    Command="{Binding Source={x:Reference ListaProdutoView}, Path=BindingContext.EditarProdutoCommand}"
+                                    CommandParameter="{Binding ProdutoId}"
+                                >
+                                </ImageButton>
+                            </Grid>
+                        </Border>
+
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </RefreshView>
+
+</ContentPage>

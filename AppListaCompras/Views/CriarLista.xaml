@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:Domain.ViewModel;assembly=Domain"
+             x:DataType="viewmodel:CriarEditarListaViewModel"
+             xmlns:model="clr-namespace:Domain.Model;assembly=Domain"
+             x:Class="AppListaCompras.Views.CriarLista"
+             x:Name="CriarEditarListaView"
+             Title="Criar Lista"
+             BackgroundColor="{StaticResource BgGeral}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary Source="../Resources/AppStyles/Geral.xaml" />
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="10">
+            <Border Style="{StaticResource BorderStyle}">
+                <Entry Placeholder="Nome da lista" Text="{Binding NomeLista}"></Entry>
+            </Border>
+
+            <FlexLayout JustifyContent="SpaceBetween" AlignItems="Center" HeightRequest="60">
+                <Button Style="{StaticResource BtnStyle}" Text="Salvar lista" Command="{Binding SalvarCommand}"></Button>
+                <Button Style="{StaticResource BtnStyle}" Text="Apagar lista" Command="{Binding ApagarCommand}" IsVisible="{Binding BtnVisivelApagar}" BackgroundColor="Red"></Button>
+            </FlexLayout>
+            
+
+            <!-- adicionar produtos -->
+            <Border Stroke="{StaticResource CorBorda}" BackgroundColor="{StaticResource BgShell}" StrokeThickness="2" StrokeShape="RoundRectangle 5" Padding="8" Margin="0, 10">
+                <Border.Shadow>
+                    <Shadow Brush="Black" Offset="1,1" Radius="10" Opacity="0.5"/>
+                </Border.Shadow>
+
+                <VerticalStackLayout>
+                    <Button Text="Adicionar Produtos" Command="{Binding MostrarEsconderAdicionarProdutosCommand}" BackgroundColor="{StaticResource BgShell}" TextColor="White" FontAttributes="Bold" ></Button>
+
+                    <Grid x:Name="stackadicionar" ColumnDefinitions="*" RowDefinitions="0.2*, *" IsVisible="{Binding SessaoAdicionarProdutoMostrar}" HeightRequest="{Binding SessaoAdicionarProdutoAltura}">
+                        <Border Stroke="{StaticResource CorBorda}" Grid.Column="0" Grid.Row="0" StrokeThickness="2" StrokeShape="RoundRectangle 5"  HeightRequest="40" Margin="0, 10">
+                            <SearchBar Placeholder="Procure por um produto" Text="{Binding CampoBuscaTexto, Mode=TwoWay}"></SearchBar>
+                        </Border>
+
+                        <CollectionView Margin="0, 10, 0, 0" Grid.Column="0" Grid.Row="1" RemainingItemsThreshold="1" RemainingItemsThresholdReachedCommand="{Binding CarregarProdutos}" ItemsSource="{Binding Produtos}">
+                            <CollectionView.EmptyView>
+                                <StackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                                    <Label Text="Nenhum produto encontrado" TextColor="White"></Label>
+                                </StackLayout>
+                            </CollectionView.EmptyView>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="model:Produto">
+
+                                    <Border Stroke="{StaticResource CorBorda}" StrokeThickness="2" StrokeShape="RoundRectangle 5" Padding="8" HeightRequest="40">
+                                        <Grid ColumnDefinitions="2.5*,1.1*,1.4*,0.3*">
+                                            <Label Grid.Column="0" Text="{Binding Descricao}" MaxLines="1" FontAttributes="Bold"></Label>
+                                            <Label Grid.Column="1" Text="{Binding UnidadeMedida}"  FontAttributes="Bold" ></Label>
+                                            <Label Grid.Column="2" Text="{Binding Preco, StringFormat='{0:C}'}"  FontAttributes="Bold" ></Label>
+                                            <ImageButton
+                                                Grid.Column="3"
+                                                Source="adicionar" Aspect="AspectFit" 
+                                                WidthRequest="20" HeightRequest="20"
+                                                HorizontalOptions="End"
+                                                Command="{Binding Source={x:Reference CriarEditarListaView}, Path=BindingContext.AdicionarProdutoCommand}"
+                                                CommandParameter="{Binding ProdutoId}"
+                                            >
+                                            </ImageButton>
+                                        </Grid>
+                                    </Border>
+
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            
+            <!-- separação -->
+            <Border Stroke="{StaticResource CorBorda}" BackgroundColor="{StaticResource BgShell}" StrokeThickness="2" StrokeShape="RoundRectangle 5" Padding="8" HeightRequest="300">
+                <Grid ColumnDefinitions="*" RowDefinitions="0.2*, *">
+                    <FlexLayout Grid.Column="0" Grid.Row="0" JustifyContent="SpaceBetween" AlignItems="Center" HeightRequest="30" Margin="4,0">
+                        <Label Text="Separação" FontAttributes="Bold" TextColor="White"></Label>
+                        <Label Text="{Binding ValorTotalLista, StringFormat='{0:C}'}" FontAttributes="Bold" TextColor="White"></Label>
+                    </FlexLayout>
+
+                    <CollectionView Grid.Column="0" Grid.Row="1" ItemsSource="{Binding ProdutosSeparacao}">
+                        <CollectionView.EmptyView>
+                            <StackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                                <Label Text="Nenhum produto adicionado" TextColor="White"></Label>
+                            </StackLayout>
+                        </CollectionView.EmptyView>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="model:ProdutoLista">
+
+                                <Border Stroke="{StaticResource CorBorda}" StrokeThickness="2" StrokeShape="RoundRectangle 5" Padding="5" HeightRequest="56" >
+                                    <Grid ColumnDefinitions="0.6*,1*,1*,1*,0.3*" RowDefinitions="1*, 1*">
+                                        <ImageButton
+                                            Grid.Column="0"
+                                            Grid.Row="0"
+                                            Grid.RowSpan="2"
+                                            Source="{Binding ImagemSourcePego}"  
+                                            WidthRequest="30" HeightRequest="30"
+                                            HorizontalOptions="Start"
+                                            Command="{Binding Source={x:Reference CriarEditarListaView}, Path=BindingContext.ConfirmarSeparacaoCommand}"
+                                            CommandParameter="{Binding Descricao}"
+                                        >
+                                        </ImageButton>
+                                        <Label Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="3" Text="{Binding Descricao}" MaxLines="1" FontAttributes="Bold"></Label>
+                                        <Label Grid.Column="1" Grid.Row="1" Text="{Binding UnidadeMedida}"  FontAttributes="Bold" HorizontalOptions="Start"></Label>
+                                        <Label Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding ValorTotal, StringFormat='{0:C}'}" HorizontalOptions="Center"  FontAttributes="Bold" ></Label>
+                                        <Entry Grid.Column="2" Grid.Row="1" Text="{Binding Quantidade, Mode=TwoWay}" FontAttributes="Bold" Placeholder="Quantidade" WidthRequest="60" HeightRequest="35" HorizontalOptions="Start" Keyboard="Numeric"></Entry>
+                                        <ImageButton
+                                            Grid.Column="4"
+                                            Grid.Row="0"
+                                            Grid.RowSpan="2"
+                                            Source="cancelar"
+                                            WidthRequest="30" HeightRequest="30"
+                                            HorizontalOptions="End"
+                                            Command="{Binding Source={x:Reference CriarEditarListaView}, Path=BindingContext.RemoverProdutoCommand}"
+                                            CommandParameter="{Binding Descricao}"
+                                        >
+                                        </ImageButton>
+                                    </Grid>
+                                </Border>
+
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+
+                </Grid>
+            </Border>
+
+
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

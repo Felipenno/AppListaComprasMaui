@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:Domain.ViewModel;assembly=Domain"
+             xmlns:model="clr-namespace:Domain.Model;assembly=Domain"
+             x:DataType="viewmodel:ListaComprasViewModel"
+             x:Class="AppListaCompras.Views.ListaCompras"
+             x:Name="ListaComprasView"
+             Title="Lista De Compras"
+             BackgroundColor="{StaticResource BgGeral}">
+
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsVisible="False" IsEnabled="False" />
+    </Shell.BackButtonBehavior>
+
+    <ContentPage.Resources>
+        <ResourceDictionary Source="../Resources/AppStyles/Geral.xaml" />
+    </ContentPage.Resources>
+
+    <RefreshView Command="{Binding AtualizarListaCommand}" IsRefreshing="{Binding AtualizandoPagina}">
+        <Grid Padding="10" ColumnDefinitions="*" RowDefinitions="0.2*, *" >
+            <VerticalStackLayout Grid.Column="0" Grid.Row="0"  Spacing="10" ZIndex="10">
+                <Button Style="{StaticResource BtnStyle}" Text="Nova lista" Command="{Binding CriarListaComprasCommand}"></Button>
+                <Border Style="{StaticResource BorderStyle}">
+                    <SearchBar x:Name="searchBarProdutos" Placeholder="Procure por uma lista" Text="{Binding CampoBuscaTexto, Mode=TwoWay}"></SearchBar>
+                </Border>
+                <Line></Line>
+                <ActivityIndicator Margin="10" IsRunning="{Binding CarregandoConteudo}" />
+            </VerticalStackLayout>
+
+            <CollectionView Grid.Column="0" Grid.Row="1"  ItemsSource="{Binding ListaComprasBusca}">
+                <CollectionView.EmptyView>
+                    <StackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                        <Label Text="Nenhuma lista adicionada" TextColor="White"></Label>
+                    </StackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:ListaCompras">
+
+                        <Border Style="{StaticResource BorderStyle}" Padding="8">
+                            <FlexLayout JustifyContent="SpaceBetween" AlignItems="Center">
+                                <Image Source="{Binding ImagemSourceListaConcluida}"></Image>
+                                <Label Text="{Binding Nome}" MaximumWidthRequest="100" MaxLines="1" FontAttributes="Bold"></Label>
+                                <Label Text="{Binding PrecoTotal, StringFormat='{0:C}'}" FontAttributes="Bold"></Label>
+                                <Label Text="{Binding DataCriacao}" FontAttributes="Bold"></Label>
+                                <ImageButton 
+                                    Source="editar" Aspect="AspectFit" 
+                                    WidthRequest="20" HeightRequest="20"
+                                    VerticalOptions="Start" HorizontalOptions="Start"
+                                    Command="{Binding Source={x:Reference ListaComprasView}, Path=BindingContext.EditarListaComprasCommand}"
+                                    CommandParameter="{Binding ListaComprasId}"
+                                >
+                                </ImageButton>
+                            </FlexLayout>
+                        </Border>
+
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </RefreshView>
+
+</ContentPage>
